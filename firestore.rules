@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isAdmin() {
+      return request.auth != null && 
+             request.auth.token.email_verified == true && 
+             (request.auth.token.email == "arjunlaptop7507@gmail.com" || request.auth.token.email == "dearsoft0205@gmail.com");
+    }
+
+    function isValidId(id) {
+       return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidLead(data) {
+      return data.keys().hasAll(['name', 'email', 'projectType', 'budget', 'message', 'createdAt']) && 
+             data.keys().size() == 6 &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.email is string && data.email.size() <= 100 &&
+             data.projectType is string && data.budget is string &&
+             data.message is string && data.message.size() <= 5000 &&
+             data.createdAt == request.time;
+    }
+
+    function isValidBooking(data) {
+      // Allow optional userEmail
+      return data.keys().hasAll(['date', 'time', 'createdAt']) &&
+             data.date is string && data.time is string &&
+             data.createdAt == request.time;
+    }
+
+    match /leads/{leadId} {
+      allow create: if isValidId(leadId) && isValidLead(request.resource.data);
+      allow read, write: if isAdmin();
+    }
+
+    match /bookings/{bookingId} {
+      allow create: if isValidId(bookingId) && isValidBooking(request.resource.data);
+      allow read, write: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gold: #fbce44;
+  --color-space-black: #06080d;
+  --color-text-base: #f8fafc;
+  
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  
+  --animate-spin-slow: spin 20s linear infinite;
+  --animate-spin-reverse: spin-reverse 25s linear infinite;
+  --animate-stars: moveStars 120s linear infinite;
+}
+
+@keyframes spin-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes moveStars {
+  from { transform: translateY(0); }
+  to { transform: translateY(-1000px); }
+}
+
+@layer base {
+  body {
+    @apply bg-space-black text-text-base antialiased font-sans overflow-x-hidden;
+    background-color: #06080d;
+    background-image: 
+      radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 100% 50%, rgba(147, 51, 234, 0.03) 0%, transparent 50%),
+      url("https://www.transparenttextures.com/patterns/stardust.png");
+    background-attachment: fixed;
+  }
+}
+
+.glow-text {
+  text-shadow: 0 0 20px rgba(251, 206, 68, 0.3);
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(10, 15, 25, 0.6);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .glass-card {
+    background: rgba(10, 15, 25, 0.4);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    @apply rounded-2xl transition-all duration-500 hover:border-white/10 hover:shadow-[0_0_40px_rgba(37,99,235,0.1)];
+  }
+}
+
+.input-dark {
+  @apply bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-gold transition-all;
+}
+
+.stars-bg {
+  @apply fixed inset-0 pointer-events-none -z-10 overflow-hidden;
+}
+
+.star-layer {
+  @apply absolute inset-0 w-[200%] h-[200%];
+  background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+}
+
