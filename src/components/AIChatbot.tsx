@@ -29,7 +29,8 @@ export const AIChatbot = () => {
 
     try {
       const lowerMsg = userMsg.toLowerCase();
-      const envKey = process.env.GEMINI_API_KEY;
+      const envKey = import.meta.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
+      const apiKey = isPlaceholder ? null : envKey;
       const isPlaceholder = !envKey || ['YOUR_GEMINI_API_KEY', 'your_placeholder_here', 'MY_GEMINI_API_KEY'].includes(envKey);
       
       // Use the key provided by the user as fallback for deployment
