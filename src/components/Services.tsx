@@ -78,7 +78,7 @@ export const Services = () => {
               transition={{ delay: i * 0.1, duration: 0.6 }}
               whileHover={{ y: -10 }}
               onClick={() => setSelectedService(service)}
-              className="glass-card p-10 group cursor-pointer relative overflow-hidden"
+              className="glass-card p-6 md:p-10 group cursor-pointer relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent -translate-y-1/2 translate-x-1/2 rounded-full transition-transform group-hover:scale-150 duration-700" />
               
@@ -113,46 +113,46 @@ export const Services = () => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="glass p-8 md:p-12 rounded-3xl w-full max-w-2xl relative z-10 border border-white/10 shadow-2xl"
+              className="glass p-6 md:p-12 rounded-3xl w-full max-w-2xl relative z-10 border border-white/10 shadow-2xl max-h-[85vh] overflow-y-auto"
             >
               <button 
                 onClick={() => setSelectedService(null)}
-                className="absolute top-6 right-6 p-2 hover:bg-white/10 rounded-full transition-colors text-white/40 hover:text-white"
+                className="absolute top-4 right-4 md:top-6 md:right-6 p-2 hover:bg-white/10 rounded-full transition-colors text-white/40 hover:text-white z-20"
               >
-                <X size={24} />
+                <X size={20} className="md:w-6 md:h-6" />
               </button>
 
-              <div className="flex items-center gap-6 mb-8">
-                <div className="w-20 h-20 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-cyan-400">
-                  <selectedService.icon size={40} />
+              <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 md:gap-6 mb-8">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-cyan-400 shrink-0">
+                  <selectedService.icon size={32} className="md:w-10 md:h-10" />
                 </div>
                 <div>
-                  <h3 className="text-3xl font-bold">{t(`services.${selectedService.title}`)}</h3>
-                  <p className="text-cyan-500 font-mono text-xs tracking-widest mt-2 uppercase">Service Expertise</p>
+                  <h3 className="text-2xl md:text-3xl font-bold">{t(`services.${selectedService.title}`)}</h3>
+                  <p className="text-cyan-500 font-mono text-[10px] md:text-xs tracking-widest mt-2 uppercase">Service Expertise</p>
                 </div>
               </div>
 
-              <div className="space-y-6">
-                <p className="text-xl text-white/80 leading-relaxed font-light italic">
+              <div className="space-y-4 md:space-y-6">
+                <p className="text-lg md:text-xl text-white/80 leading-relaxed font-light italic">
                   "{selectedService.desc}"
                 </p>
                 <div className="w-full h-px bg-white/10" />
-                <p className="text-white/60 leading-loose text-lg">
+                <p className="text-white/60 leading-relaxed md:leading-loose text-sm md:text-lg">
                   {selectedService.details}
                 </p>
               </div>
 
-              <div className="mt-12 flex gap-4">
+              <div className="mt-8 md:mt-12 flex flex-col sm:flex-row gap-4">
                 <a 
                   href="#contact" 
                   onClick={() => setSelectedService(null)}
-                  className="bg-cyan-500 hover:bg-cyan-400 text-black px-8 py-3 rounded-xl font-bold transition-all"
+                  className="bg-cyan-500 hover:bg-cyan-400 text-black px-8 py-3 rounded-xl font-bold transition-all text-center"
                 >
                   Request Consultation
                 </a>
                 <button 
                   onClick={() => setSelectedService(null)}
-                  className="px-8 py-3 rounded-xl font-bold border border-white/10 hover:bg-white/5 transition-all"
+                  className="px-8 py-3 rounded-xl font-bold border border-white/10 hover:bg-white/5 transition-all text-center"
                 >
                   Close
                 </button>

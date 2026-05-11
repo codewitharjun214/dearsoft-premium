@@ -39,12 +39,12 @@ export const ContactForm = ({ onBookingClick }: { onBookingClick: () => void }) 
   };
 
   return (
-    <section id="contact" className="py-24">
+    <section id="contact" className="py-24 scroll-mt-20">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="grid lg:grid-cols-5 gap-12">
           {/* Left: Contact Info & Stats */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="glass p-8 rounded-2xl h-full flex flex-col justify-between">
+            <div className="glass p-6 md:p-8 rounded-2xl h-full flex flex-col justify-between">
               <div>
                 <h2 className="text-3xl font-bold mb-6 flex items-center gap-2">
                   <span className="w-2 h-8 bg-gold rounded-full"></span>
@@ -88,14 +88,14 @@ export const ContactForm = ({ onBookingClick }: { onBookingClick: () => void }) 
 
           {/* Right: Form */}
           <div className="lg:col-span-3">
-            <div className="glass p-8 rounded-2xl border border-white/10">
+            <div className="glass p-6 md:p-8 rounded-2xl border border-white/10">
               <h3 className="text-2xl font-semibold mb-6 flex items-center gap-2">
                 <span className="w-2 h-8 bg-gold rounded-full"></span>
                 Start Your Project
               </h3>
               
-              <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1.5 col-span-1">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 md:grid md:grid-cols-2 md:gap-4 md:space-y-0">
+                <div className="space-y-1.5">
                   <label className="text-[10px] uppercase tracking-widest text-white/50">{t('contact.name')}</label>
                   <input
                     {...register('name')}
@@ -105,7 +105,7 @@ export const ContactForm = ({ onBookingClick }: { onBookingClick: () => void }) 
                   {errors.name && <p className="text-red-400 text-[10px] mt-1">{errors.name.message}</p>}
                 </div>
 
-                <div className="space-y-1.5 col-span-1">
+                <div className="space-y-1.5">
                   <label className="text-[10px] uppercase tracking-widest text-white/50">{t('contact.email')}</label>
                   <input
                     {...register('email')}
@@ -115,7 +115,7 @@ export const ContactForm = ({ onBookingClick }: { onBookingClick: () => void }) 
                   {errors.email && <p className="text-red-400 text-[10px] mt-1">{errors.email.message}</p>}
                 </div>
 
-                <div className="space-y-1.5 col-span-1">
+                <div className="space-y-1.5">
                   <label className="text-[10px] uppercase tracking-widest text-white/50">{t('contact.projectType')}</label>
                   <select
                     {...register('projectType')}
@@ -129,7 +129,7 @@ export const ContactForm = ({ onBookingClick }: { onBookingClick: () => void }) 
                   {errors.projectType && <p className="text-red-400 text-[10px] mt-1">{errors.projectType.message}</p>}
                 </div>
 
-                <div className="space-y-1.5 col-span-1">
+                <div className="space-y-1.5">
                   <label className="text-[10px] uppercase tracking-widest text-white/50">{t('contact.budget')}</label>
                   <input
                     {...register('budget')}
@@ -150,7 +150,7 @@ export const ContactForm = ({ onBookingClick }: { onBookingClick: () => void }) 
                   {errors.message && <p className="text-red-400 text-[10px] mt-1">{errors.message.message}</p>}
                 </div>
 
-                <div className="col-span-2 mt-4 flex flex-col md:flex-row gap-4">
+                <div className="md:col-span-2 mt-4 flex flex-col md:flex-row gap-4">
                   <button
                     type="submit"
                     disabled={isSubmitting}

@@ -21,20 +21,27 @@ export const Projects = () => {
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project, i) => (
-            <motion.div
+            <motion.a
               key={i}
+              href="#contact"
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
+              whileHover={{ scale: 1.02 }}
               transition={{ delay: i * 0.1 }}
-              className="glass-card p-6 border-b-4 border-b-transparent hover:border-b-gold group"
+              className="glass-card p-6 border-b-4 border-b-transparent hover:border-b-gold group block cursor-pointer transition-all"
             >
-              <div className="text-gold mb-4 group-hover:scale-110 transition-transform">
-                <project.icon size={40} />
+              <div className="flex justify-between items-start mb-4">
+                <div className="text-gold group-hover:scale-110 transition-transform">
+                  <project.icon size={40} />
+                </div>
+                <div className="text-[10px] bg-gold/10 text-gold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity uppercase font-bold tracking-tighter">
+                  Inquire Now
+                </div>
               </div>
               <h4 className="text-xl font-bold mb-3">{project.title}</h4>
-              <p className="text-white/60 text-sm mb-4 leading-relaxed">{project.desc}</p>
+              <p className="text-white/60 text-sm mb-4 leading-relaxed line-clamp-3">{project.desc}</p>
               <div className="text-xs font-mono text-gold uppercase tracking-wider">{project.tech}</div>
-            </motion.div>
+            </motion.a>
           ))}
         </div>
       </div>
