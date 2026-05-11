@@ -51,7 +51,7 @@ export const AIChatbot = () => {
       }
 
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
         {
           method: 'POST',
 
@@ -98,11 +98,15 @@ ${userMsg}
 
       const data = await response.json();
 
-      console.log(data);
+      console.log("Gemini Response:", data);
+
+      if (data.error) {
+        throw new Error(data.error.message);
+      }
 
       const aiText =
         data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-        'Sorry, I could not generate a response right now.';
+        'Sorry, AI is not responding right now.';
 
       setMessages((prev) => [
         ...prev,
@@ -111,7 +115,7 @@ ${userMsg}
           text: aiText,
         },
       ]);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Gemini Error:', error);
 
       setMessages((prev) => [
@@ -119,7 +123,8 @@ ${userMsg}
         {
           role: 'ai',
           text:
-            'AI assistant is temporarily unavailable. Please contact us at dearsoft0205@gmail.com',
+            error.message ||
+            'AI assistant is temporarily unavailable.',
         },
       ]);
     } finally {
@@ -210,7 +215,7 @@ ${userMsg}
                   e.key === 'Enter' && handleSend()
                 }
                 placeholder="Type a message..."
-                className="w-full bg-black/40 border border-white/10 rounded-full px-4 py-2.5 text-xs focus:outline-hidden focus:border-gold transition-all"
+                className="w-full bg-black/40 border border-white/10 rounded-full px-4 py-2.5 text-xs focus:outline-none focus:border-gold transition-all"
               />
 
               <button
