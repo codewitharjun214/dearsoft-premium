@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Calendar as CalendarIcon, Clock, CheckCircle } from 'lucide-react';
 import { format, addDays, startOfToday } from 'date-fns';
 import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { db, handleFirestoreError, OperationType, auth } from '../lib/firebase';
+import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 
 export const BookingSystem = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
   const [step, setStep] = useState(1);
+  const [userEmail, setUserEmail] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
@@ -20,10 +21,10 @@ export const BookingSystem = ({ isOpen, onClose }: { isOpen: boolean, onClose: (
       await setDoc(doc(db, bookingsCollection, bookingId), {
         date: format(selectedDate!, 'yyyy-MM-dd'),
         time: selectedTime,
+        userEmail: userEmail,
         createdAt: serverTimestamp(),
-        userEmail: auth.currentUser?.email || null
       });
-      setStep(3);
+      setStep(4);
     } catch (error) {
       handleFirestoreError(error, OperationType.WRITE, `${bookingsCollection}/${bookingId}`);
     }
@@ -55,6 +56,36 @@ export const BookingSystem = ({ isOpen, onClose }: { isOpen: boolean, onClose: (
           {step === 1 && (
             <div className="space-y-6">
               <h2 className="text-2xl font-semibold mb-4">Book a Meeting</h2>
+              <p className="text-white/60 text-sm">Please provide your email address to get started.</p>
+              <div className="space-y-4">
+                <input
+                  type="email"
+                  value={userEmail}
+                  onChange={(e) => setUserEmail(e.target.value)}
+                  placeholder="john@example.com"
+                  className="input-dark w-full"
+                  autoFocus
+                />
+                <button
+                  disabled={!userEmail || !userEmail.includes('@')}
+                  onClick={() => setStep(2)}
+                  className="w-full bg-gold text-black py-4 rounded-lg font-bold shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:brightness-110 disabled:opacity-50 transition-all uppercase tracking-widest text-xs"
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          )}
+
+          {step === 2 && (
+            <div className="space-y-6">
+              <button 
+                onClick={() => setStep(1)}
+                className="text-gold text-xs hover:underline uppercase tracking-widest"
+              >
+                ← Back to email
+              </button>
+              <h2 className="text-2xl font-semibold mb-4">Select Date</h2>
               <div className="bg-white/5 rounded-xl border border-white/10 p-4">
                 <div className="flex justify-between items-center mb-4">
                   <span className="font-medium">{format(startOfToday(), 'MMMM yyyy')}</span>
@@ -70,7 +101,7 @@ export const BookingSystem = ({ isOpen, onClose }: { isOpen: boolean, onClose: (
                   {dates.map((date) => (
                     <button
                       key={date.toISOString()}
-                      onClick={() => { setSelectedDate(date); setStep(2); }}
+                      onClick={() => { setSelectedDate(date); setStep(3); }}
                       className="py-3 px-4 bg-white/5 border border-white/10 rounded-lg hover:border-gold hover:bg-gold/5 transition-all text-sm group"
                     >
                       <div className="text-[10px] text-white/40 uppercase tracking-tighter group-hover:text-gold">{format(date, 'eee')}</div>
@@ -82,10 +113,10 @@ export const BookingSystem = ({ isOpen, onClose }: { isOpen: boolean, onClose: (
             </div>
           )}
 
-          {step === 2 && (
+          {step === 3 && (
             <div className="space-y-6">
               <button 
-                onClick={() => setStep(1)}
+                onClick={() => setStep(2)}
                 className="text-gold text-xs hover:underline uppercase tracking-widest"
               >
                 ← Back to dates
@@ -119,7 +150,7 @@ export const BookingSystem = ({ isOpen, onClose }: { isOpen: boolean, onClose: (
             </div>
           )}
 
-          {step === 3 && (
+          {step === 4 && (
             <div className="py-12 text-center space-y-6">
               <motion.div
                 initial={{ scale: 0 }}

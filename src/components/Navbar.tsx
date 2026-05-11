@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
-import { Globe, ShieldCheck, Menu, X } from 'lucide-react';
+import { Globe, ShieldCheck, Menu, X, Coins } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 import { Logo } from './Logo';
+import { useCurrency, currencies } from '../context/CurrencyContext';
 
 export const Navbar = ({ onAdminClick }: { onAdminClick: () => void }) => {
   const { t, i18n } = useTranslation();
+  const { currency, setCurrency } = useCurrency();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
 
   const languages = [
     { code: 'en', label: 'EN' },
@@ -41,19 +44,57 @@ export const Navbar = ({ onAdminClick }: { onAdminClick: () => void }) => {
             </a>
           ))}
           
-          <div className="flex items-center gap-3 border-l border-white/10 pl-8 ml-2 text-cyan-400">
-            {languages.map((lang) => (
-              <button
-                key={lang.code}
-                onClick={() => toggleLanguage(lang.code)}
-                className={cn(
-                  "text-[10px] font-bold transition-all px-1.5 py-0.5 rounded",
-                  i18n.language === lang.code ? "text-cyan-400 bg-white/10" : "opacity-40 hover:opacity-100"
-                )}
+          <div className="flex items-center gap-6 border-l border-white/10 pl-8 ml-2">
+            {/* Currency Selector */}
+            <div className="relative">
+              <button 
+                onClick={() => setShowCurrencyDropdown(!showCurrencyDropdown)}
+                onBlur={() => setTimeout(() => setShowCurrencyDropdown(false), 200)}
+                className="flex items-center gap-1.5 text-[10px] font-bold text-white/40 hover:text-cyan-400 transition-colors uppercase tracking-widest"
               >
-                {lang.label}
+                <Coins size={12} className="text-cyan-400" />
+                {currency.code}
               </button>
-            ))}
+
+              <AnimatePresence>
+                {showCurrencyDropdown && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute top-full right-0 mt-2 p-1 glass border border-white/10 rounded-lg min-w-[80px]"
+                  >
+                    {currencies.map((c) => (
+                      <button
+                        key={c.code}
+                        onClick={() => { setCurrency(c.code); setShowCurrencyDropdown(false); }}
+                        className={cn(
+                          "w-full text-left px-3 py-1.5 text-[10px] font-bold transition-all rounded hover:bg-white/5",
+                          currency.code === c.code ? "text-cyan-400" : "text-white/40"
+                        )}
+                      >
+                        {c.symbol} {c.label}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div className="flex items-center gap-3 text-cyan-400">
+              {languages.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => toggleLanguage(lang.code)}
+                  className={cn(
+                    "text-[10px] font-bold transition-all px-1.5 py-0.5 rounded",
+                    i18n.language === lang.code ? "text-cyan-400 bg-white/10" : "opacity-40 hover:opacity-100"
+                  )}
+                >
+                  {lang.label}
+                </button>
+              ))}
+            </div>
           </div>
           
           <button 
@@ -103,19 +144,36 @@ export const Navbar = ({ onAdminClick }: { onAdminClick: () => void }) => {
                 </a>
               ))}
               
-              <div className="flex items-center gap-4 py-4 w-full justify-center border-t border-white/5">
-                {languages.map((lang) => (
-                  <button
-                    key={lang.code}
-                    onClick={() => toggleLanguage(lang.code)}
-                    className={cn(
-                      "text-xs font-bold transition-all px-3 py-1 rounded-full border border-white/5",
-                      i18n.language === lang.code ? "text-cyan-400 bg-white/10 border-cyan-500/20" : "opacity-40"
-                    )}
-                  >
-                    {lang.label}
-                  </button>
-                ))}
+              <div className="flex flex-col gap-4 w-full py-4 border-t border-white/5">
+                <div className="flex justify-center gap-4">
+                  {currencies.map((c) => (
+                    <button
+                      key={c.code}
+                      onClick={() => setCurrency(c.code)}
+                      className={cn(
+                        "text-xs font-bold transition-all px-3 py-1 rounded-full border border-white/5",
+                        currency.code === c.code ? "text-cyan-400 bg-white/10 border-cyan-500/20" : "opacity-40"
+                      )}
+                    >
+                      {c.symbol} {c.label}
+                    </button>
+                  ))}
+                </div>
+                
+                <div className="flex items-center gap-4 justify-center">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => toggleLanguage(lang.code)}
+                      className={cn(
+                        "text-xs font-bold transition-all px-3 py-1 rounded-full border border-white/5",
+                        i18n.language === lang.code ? "text-cyan-400 bg-white/10 border-cyan-500/20" : "opacity-40"
+                      )}
+                    >
+                      {lang.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>

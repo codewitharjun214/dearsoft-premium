@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Send, Calendar, Phone, Mail, MapPin } from 'lucide-react';
 import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
+import { useCurrency } from '../context/CurrencyContext';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name is required'),
@@ -19,6 +20,7 @@ type ContactFormValues = z.infer<typeof contactSchema>;
 
 export const ContactForm = ({ onBookingClick }: { onBookingClick: () => void }) => {
   const { t } = useTranslation();
+  const { currency } = useCurrency();
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
   });
@@ -134,7 +136,7 @@ export const ContactForm = ({ onBookingClick }: { onBookingClick: () => void }) 
                   <input
                     {...register('budget')}
                     className="input-dark w-full"
-                    placeholder="e.g. $1000 - $5000"
+                    placeholder={`e.g. ${currency.symbol}1000 - ${currency.symbol}5000`}
                   />
                   {errors.budget && <p className="text-red-400 text-[10px] mt-1">{errors.budget.message}</p>}
                 </div>
