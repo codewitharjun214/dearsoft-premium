@@ -1,65 +1,161 @@
-const response = await fetch(
-  `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=${apiKey}`,
-  {
-    method: 'POST',
+import { useState } from 'react';
 
-    headers: {
-      'Content-Type': 'application/json',
+export const AIChatbot = () => {
+  const [messages, setMessages] = useState([
+    {
+      role: 'ai',
+      text: 'Hello! Welcome to DearSoft IT Solutions.',
     },
+  ]);
 
-    body: JSON.stringify({
-      contents: [
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSend = async () => {
+    if (!input.trim()) return;
+
+    const userMessage = input;
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: 'user',
+        text: userMessage,
+      },
+    ]);
+
+    setInput('');
+    setLoading(true);
+
+    try {
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=${apiKey}`,
         {
-          parts: [
-            {
-              text: `
-You are DearSoft IT Solutions AI Assistant.
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text: userMessage,
+                  },
+                ],
+              },
+            ],
+          }),
+        }
+      );
 
-Company Details:
-- Company: DearSoft IT Solutions
-- Location: Pune, India
+      const data = await response.json();
 
-Services:
-- Web Development
-- MERN Stack Development
-- UI/UX Design
-- E-Commerce Solutions
-- Cloud Services
-- API Development
-- Website Maintenance
+      const aiReply =
+        data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+        'AI not responding.';
 
-Instructions:
-- Reply professionally
-- Keep answers short and helpful
-- Encourage users to contact dearsoft0205@gmail.com
-
-User Message:
-${userMsg}
-              `,
-            },
-          ],
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'ai',
+          text: aiReply,
         },
-      ],
-    }),
-  }
-);
+      ]);
+    } catch (error) {
+      console.error(error);
 
-const data = await response.json();
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'ai',
+          text: 'Something went wrong.',
+        },
+      ]);
+    }
 
-console.log('Gemini Response:', data);
+    setLoading(false);
+  };
 
-if (data.error) {
-  throw new Error(data.error.message);
-}
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        bottom: '20px',
+        right: '20px',
+        width: '320px',
+        background: '#111',
+        border: '1px solid #333',
+        borderRadius: '12px',
+        padding: '15px',
+        color: 'white',
+        zIndex: 9999,
+      }}
+    >
+      <h3>Dear AI Assistant</h3>
 
-const aiText =
-  data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-  'Sorry, AI is not responding right now.';
+      <div
+        style={{
+          height: '300px',
+          overflowY: 'auto',
+          marginBottom: '10px',
+        }}
+      >
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            style={{
+              marginBottom: '10px',
+              textAlign: msg.role === 'user' ? 'right' : 'left',
+            }}
+          >
+            <div
+              style={{
+                display: 'inline-block',
+                padding: '10px',
+                borderRadius: '10px',
+                background:
+                  msg.role === 'user' ? '#facc15' : '#222',
+                color: msg.role === 'user' ? '#000' : '#fff',
+              }}
+            >
+              {msg.text}
+            </div>
+          </div>
+        ))}
 
-setMessages((prev) => [
-  ...prev,
-  {
-    role: 'ai',
-    text: aiText,
-  },
-]);
+        {loading && <p>Typing...</p>}
+      </div>
+
+      <div style={{ display: 'flex', gap: '10px' }}>
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type message"
+          style={{
+            flex: 1,
+            padding: '10px',
+            borderRadius: '8px',
+            border: 'none',
+          }}
+        />
+
+        <button
+          onClick={handleSend}
+          style={{
+            padding: '10px 15px',
+            border: 'none',
+            borderRadius: '8px',
+            background: '#facc15',
+            cursor: 'pointer',
+          }}
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  );
+};
