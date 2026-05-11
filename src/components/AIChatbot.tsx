@@ -29,10 +29,10 @@ export const AIChatbot = () => {
 
     try {
       const lowerMsg = userMsg.toLowerCase();
-      // In Vite, variables MUST be prefixed with VITE_ to be exposed to the client
-      const envKey = import.meta.env.VITE_GEMINI_API_KEY;
+      // Try both Vite-prefixed and process.env (aliased in vite.config.ts)
+      const envKey = import.meta.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
       
-      const isPlaceholder = !envKey || ['YOUR_GEMINI_API_KEY', 'your_placeholder_here', 'MY_GEMINI_API_KEY'].includes(envKey);
+      const isPlaceholder = !envKey || ['YOUR_GEMINI_API_KEY', 'your_placeholder_here', 'MY_GEMINI_API_KEY', ''].includes(envKey.trim());
       const apiKey = isPlaceholder ? null : envKey;
 
       if (!apiKey) {
@@ -86,9 +86,18 @@ export const AIChatbot = () => {
     } catch (error) {
       console.error('AIChatbot Error:', error);
       const isMissingKey = error instanceof Error && error.message === 'MISSING_API_KEY';
-      const msg = isMissingKey 
-        ? "I need an API key to function. Please configure the GEMINI_API_KEY in your deployment settings."
-        : "I'm offline right now, but you can always reach us at dearsoft0205@gmail.com!";
+      let msg = "I'm offline right now, but you can always reach us at dearsoft0205@gmail.com!";
+      
+      if (isMissingKey) {
+        msg = "AI configuration incomplete. Please set VITE_GEMINI_API_KEY in your deployment environment variables.";
+      } else if (error instanceof Error) {
+        if (error.message.includes('quota')) {
+          msg = "I've handled too many requests lately. Please try again in a moment or email us!";
+        } else if (error.message.includes('safety')) {
+          msg = "I cannot discuss that topic. Please stay within our service scope!";
+        }
+      }
+      
       setMessages(prev => [...prev, { role: 'ai', text: msg }]);
     } finally {
       setIsTyping(false);
