@@ -47,11 +47,11 @@ export const AIChatbot = () => {
         import.meta.env.VITE_GEMINI_API_KEY;
 
       if (!apiKey) {
-        throw new Error('Missing Gemini API Key');
+        throw new Error('Gemini API key missing');
       }
 
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
         {
           method: 'POST',
 
@@ -98,7 +98,7 @@ ${userMsg}
 
       const data = await response.json();
 
-      console.log("Gemini Response:", data);
+      console.log('Gemini Response:', data);
 
       if (data.error) {
         throw new Error(data.error.message);
