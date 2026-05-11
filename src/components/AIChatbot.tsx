@@ -30,11 +30,8 @@ export const AIChatbot = () => {
     try {
       const lowerMsg = userMsg.toLowerCase();
       // Try Vite-prefixed key first (recommended for client-side apps), then standard process.env
-      const envKey = import.meta.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
       
-      const isPlaceholder = !envKey || ['YOUR_GEMINI_API_KEY', 'your_placeholder_here', 'MY_GEMINI_API_KEY'].includes(envKey);
-      
-      const apiKey = isPlaceholder ? null : envKey;
 
       if (!apiKey) {
         if (lowerMsg.includes('hi') || lowerMsg.includes('hello')) {
