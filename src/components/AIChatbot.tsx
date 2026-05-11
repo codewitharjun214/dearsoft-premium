@@ -89,12 +89,18 @@ export const AIChatbot = () => {
       let msg = "I'm offline right now, but you can always reach us at dearsoft0205@gmail.com!";
       
       if (isMissingKey) {
-        msg = "AI configuration incomplete. Please set VITE_GEMINI_API_KEY in your deployment environment variables.";
+        msg = "AI configuration incomplete. Please set VITE_GEMINI_API_KEY in your deployment environment variables (Netlify/Vercel).";
       } else if (error instanceof Error) {
-        if (error.message.includes('quota')) {
-          msg = "I've handled too many requests lately. Please try again in a moment or email us!";
-        } else if (error.message.includes('safety')) {
+        const errorMsg = error.message.toLowerCase();
+        if (errorMsg.includes('quota') || errorMsg.includes('429')) {
+          msg = "The AI is currently at its request limit (Quota Exceeded). This usually resets in a minute for free tier keys, or you may need to upgrade in Google AI Studio.";
+        } else if (errorMsg.includes('api key not found') || errorMsg.includes('invalid') || errorMsg.includes('401') || errorMsg.includes('403')) {
+          msg = "Unauthorized: The API key provided is invalid or not allowed. Please ensure you are using a Gemini API Key from Google AI Studio, not a Firebase key.";
+        } else if (errorMsg.includes('safety')) {
           msg = "I cannot discuss that topic. Please stay within our service scope!";
+        } else {
+          // Provide some hint of the error in dev/preview if needed, or keep generic for production
+          msg = `Service temporarily unavailable. (Reason: ${error.message.substring(0, 50)}${error.message.length > 50 ? '...' : ''})`;
         }
       }
       
