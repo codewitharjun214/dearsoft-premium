@@ -67,7 +67,7 @@ export const About = () => {
                 transition={{ delay: i * 0.1 }}
                 className="glass-card p-6 border-l-4 border-l-gold group hover:border-l-white"
               >
-                <h5 className="text-gold font-bold text-lg mb-1 group-hover:text-white transition-colors">{item.title}</h5>
+                <h3 className="text-gold font-bold text-lg mb-1 group-hover:text-white transition-colors">{item.title}</h3>
                 <p className="text-white/60 text-sm">{item.desc}</p>
               </motion.div>
             ))}

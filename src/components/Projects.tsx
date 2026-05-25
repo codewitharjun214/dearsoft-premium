@@ -38,7 +38,7 @@ export const Projects = () => {
                   Inquire Now
                 </div>
               </div>
-              <h4 className="text-xl font-bold mb-3">{project.title}</h4>
+              <h3 className="text-xl font-bold mb-3">{project.title}</h3>
               <p className="text-white/60 text-sm mb-4 leading-relaxed line-clamp-3">{project.desc}</p>
               <div className="text-xs font-mono text-gold uppercase tracking-wider">{project.tech}</div>
             </motion.a>
