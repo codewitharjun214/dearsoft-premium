@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dearsofttech.vercel.app/sitemap.xml
